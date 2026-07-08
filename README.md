@@ -1,11 +1,17 @@
 # Catalog Ingestion Automation
 
-This script supports your exact two-step workflow.
+## Overview
 
-1. Step 1 (`format`): take Lodg_TN-style input, keep only _lodg columns, and set `extract_text=yes`.
-2. Step 2 (`validate`): take formatted output and validation workbook, remove rows with `validation_status=Invalid` by matching `url`.
+**Catalog Ingestion Automation** is a two-step utility for preparing WMS catalog files across different states.
 
-The _lodg columns are hardcoded in code, so you do not need to pass `_Lodg_CA` every run.
+It solves the repetitive cleanup problem in a simple flow: first format a raw Lodg file into the required _lodg structure, then apply validation later to remove invalid rows. This avoids manual column cleanup, keeps output consistent, and lets validation happen when the validation sheet becomes available.
+
+No template file is required per run. The _lodg output columns are already hardcoded in the script, so files like _Lodg_CA are not needed each time.
+
+### Key Capabilities
+
+- Run 1 (`format`): accepts a Lodg-style input file, keeps only required _lodg columns, and sets `extract_text=yes`.
+- Run 2 (`validate`): accepts the formatted file and validation workbook, then removes rows where `validation_status=Invalid` using `url` matching.
 
 ## Hardcoded Output Columns
 
@@ -39,11 +45,10 @@ The formatter always writes these columns in this order:
 ## Run 1: Format (No Validation Needed)
 
 ```bash
-"/Users/dipesh.banerjee/WMS Files/URLingestion_Scripts/.venv/bin/python" ingest_catalog.py \
-  format \
-  --source "Lodg_TN_Tennessee.xlsx" \
-  --output "Lodg_TN_Tennessee_formatted.xlsx"
+  .venv/bin/python ingest_catalog.py format --source 'UnFormatted_Excel_sheet.xlsx' ;
 ```
+
+This command only needs the input Excel file.
 
 Defaults:
 
@@ -60,10 +65,7 @@ Useful flags:
 ## Run 2: Validate (After You Receive Validation File)
 
 ```bash
-"/Users/dipesh.banerjee/WMS Files/URLingestion_Scripts/.venv/bin/python" ingest_catalog.py \
-  validate \
-  --formatted "Lodg_TN_Tennessee_formatted.xlsx" \
-  --validation "validation__Lodg_TN_Tennessee_formatted.xlsx"
+.venv/bin/python ingest_catalog.py validate --formatted 'Formatted_Excel_sheet.xlsx' --validation 'validation_Formatted_Excel_sheet.xlsx' ;
 ```
 
 Defaults:
